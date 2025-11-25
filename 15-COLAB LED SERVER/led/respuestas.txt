@@ -1,0 +1,191 @@
+1. ¿Qué es un ESP32 y qué características lo hacen adecuado para crear un servidor web pequeño?
+
+El ESP32 es un microcontrolador desarrollado por Espressif Systems que incluye conectividad WiFi y Bluetooth integradas. Es muy potente en comparación con otros microcontroladores, ya que cuenta con dos núcleos, buena cantidad de memoria RAM, y soporta múltiples periféricos.
+Estas características, junto con su bajo consumo y su capacidad de conectarse a redes inalámbricas, lo hacen ideal para crear servidores web pequeños, donde puede alojar páginas simples y controlar dispositivos conectados (como sensores o actuadores) a través de una red local.
+
+2. Explique el concepto de servidor web. ¿Cómo puede un dispositivo como el ESP32 funcionar como uno?
+
+Un servidor web es un sistema que recibe peticiones HTTP desde un cliente (normalmente un navegador) y responde con información, como páginas HTML o datos.
+El ESP32 puede funcionar como servidor web porque puede abrir un puerto (por defecto el 80), escuchar peticiones y responder con contenido generado desde su propio código. En otras palabras, el ESP32 actúa como un pequeño servidor capaz de manejar solicitudes y enviar respuestas dentro de una red WiFi.
+
+3. Describa cómo se utiliza la biblioteca WiFi.h en proyectos con ESP32. ¿Qué funcionalidades principales proporciona?
+
+La biblioteca WiFi.h permite que el ESP32 se conecte a una red inalámbrica. Proporciona funciones para:
+
+Conectarse a un SSID con una contraseña.
+
+Obtener la dirección IP asignada.
+
+Escanear redes disponibles.
+
+Crear un punto de acceso (AP) o funcionar en modo estación (STA).
+
+En resumen, WiFi.h gestiona toda la parte de conexión, comunicación y estado de la red.
+
+4. ¿Qué papel juega el protocolo HTTP en la comunicación entre un navegador web y el servidor web en el ESP32?
+
+El protocolo HTTP define cómo se envían y reciben mensajes entre el cliente (navegador) y el servidor (ESP32).
+Cuando el usuario escribe una dirección IP en el navegador, este envía una petición HTTP (GET o POST) al ESP32, y el microcontrolador responde con una respuesta HTTP que puede incluir HTML, texto o datos JSON.
+Este intercambio permite la interacción entre el usuario y el dispositivo, como encender o apagar un LED desde una página web.
+
+5. Explique el proceso de "escuchar" en un puerto específico (como el 80) en el contexto de un servidor web. ¿Por qué es importante este proceso?
+
+“Escuchar en un puerto” significa que el servidor está pendiente de recibir conexiones entrantes en ese número de puerto.
+El puerto 80 es el estándar para el tráfico HTTP.
+Este proceso es importante porque sin él el servidor no podría detectar ni aceptar solicitudes del cliente. En el ESP32, esto se hace creando una instancia de WiFiServer y llamando a server.begin().
+
+6. ¿Cómo se manejan las peticiones entrantes en un servidor web basado en ESP32? Proporcione un ejemplo de cómo se podría controlar una petición para encender un LED.
+
+Cuando el ESP32 detecta una nueva conexión (WiFiClient client = server.available()), lee la petición enviada por el navegador.
+Si la URL incluye algo como GET /LED=ON, el código puede ejecutar una acción, por ejemplo:
+
+if (request.indexOf("/LED=ON") != -1) {
+  digitalWrite(LED_BUILTIN, HIGH);
+}
+
+
+Luego, el ESP32 responde con una página que muestra el nuevo estado del LED.
+
+7. ¿Qué es una dirección IP local y cómo se asigna al ESP32 cuando se conecta a una red WiFi? ¿Por qué es importante para acceder al servidor web?
+
+La dirección IP local es la que el router asigna al ESP32 dentro de la red mediante DHCP.
+Es importante porque esa IP es la dirección que debemos escribir en el navegador para acceder al servidor web alojado en el ESP32.
+Sin esta dirección, el cliente no sabría dónde enviar las solicitudes.
+
+8. Explique la diferencia entre una conexión WiFi abierta y una segura. ¿Cómo afecta esto a un proyecto que involucra un ESP32 actuando como servidor web?
+
+Una conexión abierta no tiene contraseña, mientras que una segura utiliza cifrado (como WPA2) y una clave para conectarse.
+Si el ESP32 está en una red abierta, cualquiera podría conectarse y acceder al servidor, lo cual representa un riesgo.
+Por eso, es recomendable usar una red segura o incluso implementar autenticación básica en el propio servidor del ESP32.
+
+9. ¿Cuáles son los desafíos de seguridad que deben considerarse cuando se expone un ESP32 a una red como servidor web y cómo se pueden mitigar?
+
+Los principales riesgos son el acceso no autorizado y los ataques remotos.
+Para mitigarlos, se pueden usar medidas como:
+
+Contraseñas seguras y redes cifradas.
+
+Filtros de IP o autenticación por usuario.
+
+No exponer el servidor a Internet sin control.
+
+Actualizar el firmware con parches de seguridad.
+
+10. ¿Cómo se utiliza la función WiFiClient para manejar clientes web en el ESP32? Describa el ciclo de vida de una conexión desde que el cliente se conecta hasta que se cierra la conexión.
+
+WiFiClient representa una conexión individual con un cliente.
+El ciclo típico es:
+
+El servidor detecta un cliente (server.available()).
+
+Se crea un objeto WiFiClient.
+
+Se leen los datos de la petición.
+
+Se genera y envía la respuesta HTTP.
+
+Finalmente, se cierra la conexión (client.stop()).
+
+11. ¿Cómo se inicializa el servidor web en el ESP32 y en qué puerto escucha por defecto según el código proporcionado?
+
+Se crea una instancia de servidor con:
+
+WiFiServer server(80);
+server.begin();
+
+
+Por defecto, escucha en el puerto 80, que es el estándar para HTTP.
+
+12. Analiza cómo se crea una instancia del WiFiServer y se le asigna un puerto para escuchar las conexiones entrantes.
+
+El constructor de WiFiServer recibe el número del puerto como parámetro:
+
+WiFiServer server(80);
+
+
+Esto le indica al ESP32 en qué puerto debe escuchar peticiones. Luego, al ejecutar server.begin(), el servidor queda activo.
+
+13. Explique el propósito de la función scanNetworks() en el código y qué información específica se imprime sobre las redes WiFi disponibles.
+
+La función WiFi.scanNetworks() busca todas las redes WiFi cercanas.
+El ESP32 devuelve una lista con información como:
+
+Nombre del SSID.
+
+Intensidad de señal (RSSI).
+
+Tipo de cifrado (abierta, WPA2, etc.).
+Esto se imprime en el monitor serie y es útil para elegir a qué red conectarse.
+
+14. Considera qué datos se recopilan durante el escaneo de redes y cómo esto podría ser útil para el diagnóstico o la configuración de la conexión WiFi.
+
+El escaneo permite ver si la red deseada está disponible, qué tan fuerte es la señal y si requiere contraseña.
+Esto ayuda a diagnosticar problemas de conexión, elegir la red más estable o configurar la conexión automáticamente según la mejor señal.
+
+15. Describa cómo se establece la conexión WiFi en el código. ¿Qué sucede si la conexión no se puede establecer de inmediato?
+
+La conexión se inicia con:
+
+WiFi.begin(ssid, password);
+
+
+Luego el programa espera hasta que el estado cambie a WL_CONNECTED.
+Si no se conecta de inmediato, el código puede reintentar varias veces hasta que logre la conexión o se reinicie el proceso.
+
+16. Examina el bucle que espera a que el ESP32 se conecte a la red WiFi y cómo se manejan los intentos repetidos de conexión.
+
+Normalmente se usa un bucle como este:
+
+while (WiFi.status() != WL_CONNECTED) {
+  delay(500);
+  Serial.print(".");
+}
+
+
+Cada punto representa un intento de conexión. Este ciclo mantiene el ESP32 intentando conectarse hasta que lo logra, evitando que el programa siga sin conexión establecida.
+
+17. Analice cómo se manejan las peticiones HTTP entrantes en el bucle principal (loop) y cómo se determina la acción a realizar (por ejemplo, encender o apagar un LED).
+
+Dentro del loop(), el código revisa si hay un cliente disponible.
+Si lo hay, lee la petición con client.readStringUntil('\r') y analiza el contenido.
+Dependiendo de si contiene /LED=ON o /LED=OFF, se ejecuta la acción correspondiente, por ejemplo:
+
+if (request.indexOf("/LED=ON") != -1) digitalWrite(LED, HIGH);
+else if (request.indexOf("/LED=OFF") != -1) digitalWrite(LED, LOW);
+
+18. Observa cómo se lee y procesa la petición del cliente para ejecutar acciones específicas basadas en la URL solicitada.
+
+El ESP32 interpreta la línea inicial de la solicitud HTTP, algo como:
+
+GET /LED=ON HTTP/1.1
+
+
+El código busca esas palabras clave (/LED=ON o /LED=OFF) para saber qué hacer. De esta forma, la URL actúa como un comando remoto.
+
+19. ¿Cómo se envía la respuesta HTTP al cliente desde el ESP32, y qué contenido se incluye en esa respuesta según el ejemplo del código?
+
+La respuesta se envía escribiendo directamente en el cliente:
+
+client.println("HTTP/1.1 200 OK");
+client.println("Content-type:text/html");
+client.println();
+client.println("<h1>LED encendido</h1>");
+
+
+Esto genera una página HTML simple que el navegador muestra al usuario, indicando el estado del LED o incluyendo botones de control.
+
+20. Considera la estructura de la respuesta HTTP generada por el ESP32, incluyendo los encabezados y el cuerpo de la respuesta, y cómo se comunica el estado del LED o se proporcionan instrucciones al usuario.
+
+La respuesta HTTP tiene dos partes:
+
+Encabezados (headers): informan al navegador el tipo de contenido y el estado de la solicitud (200 OK).
+
+Cuerpo (body): contiene el contenido HTML, donde se muestran mensajes o botones para controlar el LED.
+
+Por ejemplo, el HTML puede mostrar:
+
+<a href="/LED=ON">Encender LED</a>
+<a href="/LED=OFF">Apagar LED</a>
+
+
+Así el usuario puede interactuar fácilmente con el ESP32 desde el navegador.

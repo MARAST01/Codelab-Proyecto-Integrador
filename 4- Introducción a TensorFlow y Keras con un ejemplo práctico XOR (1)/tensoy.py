@@ -1,6 +1,7 @@
 import numpy as np  
-from tensorflow.keras.models import Sequential  
-from tensorflow.keras.layers import Dense, Input
+from keras.models import Sequential
+from keras.layers import Input, Dense
+
 
 # ------------------------------  
 # 1. Datos de entrenamiento (XOR)  
@@ -12,7 +13,7 @@ X = np.array([
     [1, 0],  
     [1, 1]  
 ])  
-  
+
 # Salidas esperadas (tabla XOR)  
 y = np.array([  
     [0],  
@@ -47,7 +48,7 @@ model.compile(
 # ------------------------------  
 history = model.fit(  
     X, y,  
-    epochs=500,       # muchas épocas porque XOR no es lineal  
+    epochs=10000,       # muchas épocas porque XOR no es lineal  
     verbose=0         # 0 = sin logs, cámbialo a 1 para ver entrenamiento  
 )
 
@@ -57,7 +58,7 @@ history = model.fit(
 print("\nEvaluación final:")  
 loss, acc = model.evaluate(X, y, verbose=0)  
 print(f"Loss: {loss:.3f}, Accuracy: {acc:.3f}")  
-  
+
 print("\nPredicciones XOR:")  
 for a, b in X:  
     pred = model.predict(np.array([[a, b]]), verbose=0)  
