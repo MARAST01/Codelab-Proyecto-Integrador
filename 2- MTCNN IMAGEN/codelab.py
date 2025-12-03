@@ -5,7 +5,7 @@ from mtcnn.mtcnn import MTCNN
 from time import time
 
 # Carga imagen (sube archivos en Colab o usa una URL y descárgala)
-img = cv2.imread('rostroparcial2.0.jpg')  # reemplaza por tu archivo
+img = cv2.imread('grupo.jpg')  # reemplaza por tu archivo
 img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 detector = MTCNN()   # puedes ajustar min_face_size
